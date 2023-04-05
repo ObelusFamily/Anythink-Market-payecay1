@@ -29,7 +29,14 @@ class ItemsController < ApplicationController
           seller: {
             username: item.user.username,
             bio: item.user.bio,
-            image: item.user.image || 'https://static.productionready.io/images/smiley-cyrus.jpg',
+            image: item.user.image || curl https://api.openai.com/v1/images/generations \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -d '{
+              "prompt": $item.title,
+              "n": 1,
+              "size": "256x256"
+            }',
             following: signed_in? ? current_user.following?(item.user) : false,
           },
           favorited: signed_in? ? current_user.favorited?(item) : false,
